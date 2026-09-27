@@ -10,8 +10,8 @@
 </head>
 
 <body>
-  <div id="unity-container" class="unity-desktop" style="display:table; width: 100%; height: 100%;">
-    <canvas id="unity-canvas" style="display:table; width: 100%; height: 100%;"></canvas>
+  <div id="unity-container" class="unity-desktop" style="display:block; width: 100%; height: 100%;">
+    <canvas id="unity-canvas" style="display:block; width: 100%; height: 100%;"></canvas>
     <div id="unity-loading-bar">
       <div id="unity-logo"></div>
       <div id="unity-progress-bar-empty">
@@ -29,12 +29,6 @@
     // Modify or remove this function to customize the visually presented
     // way that non-critical warnings and error messages are presented to the
     // user.
-    function startup() {
-      window.onresize = function () {
-        resizeGame();
-      };
-      resizeGame();
-    }
     function resizeGame() {
       if (!(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent))) {
         var myWidth = innerWidth;
@@ -130,6 +124,17 @@
         document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
       }).then((unityInstance) => {
         document.querySelector("#unity-loading-bar").style.display = "none";
+
+        const canvasElement = document.querySelector("#unity-canvas");
+
+        const resizeObserver = new ResizeObserver(entries => {
+          for (let entry of entries) {
+            resizeGame();
+          }
+        });
+
+        // Observe the parent container element 
+        resizeObserver.observe(document.querySelector("#unity-container"));
 
       }).catch((message) => {
         alert(message);
